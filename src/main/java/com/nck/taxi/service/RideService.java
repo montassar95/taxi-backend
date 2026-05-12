@@ -129,8 +129,8 @@ public class RideService {
         ride.setPassengerName(dto.getPassengerName());
         ride.setPickupAddress(dto.getPickupAddress());
         ride.setDropoffAddress(dto.getDropoffAddress());
-        ride.setPickupLat(dto.getPickupLat());
-        ride.setPickupLng(dto.getPickupLng());
+//        ride.setPickupLat(dto.getPickupLat());
+//        ride.setPickupLng(dto.getPickupLng());
         ride.setRideDateTime(dto.getRideDateTime());
         ride.setDriver(driver);
         ride.setStatus(RideStatus.ACCEPTED);
@@ -172,13 +172,14 @@ public class RideService {
 
     // Créer course test
     public Ride createRide(String passengerName, String pickupAddress,
-                           String dropoffAddress, Double pickupLat, Double pickupLng) {
+                           String dropoffAddress) {
+//    	, Double pickupLat, Double pickupLng
         Ride ride = new Ride();
         ride.setPassengerName(passengerName);
         ride.setPickupAddress(pickupAddress);
         ride.setDropoffAddress(dropoffAddress);
-        ride.setPickupLat(pickupLat);
-        ride.setPickupLng(pickupLng);
+//        ride.setPickupLat(pickupLat);
+//        ride.setPickupLng(pickupLng);
         ride.setStatus(RideStatus.PENDING);
         ride.setRideDateTime(LocalDateTime.now());
         return rideRepository.save(ride);

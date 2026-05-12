@@ -89,9 +89,10 @@ public class RideController {
 
         Ride ride = rideService.createRide(
             passengerName, pickupAddress,
-            "Destination à confirmer",
-            pickupLat, pickupLng
+            "Destination à confirmer" 
+           
         );
+//        pickupLat, pickupLng
         rideService.broadcastRideToAllDrivers(ride);
         return ResponseEntity.ok(ride);
     }

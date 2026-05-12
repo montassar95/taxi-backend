@@ -58,28 +58,49 @@ public class AdminController {
         return ResponseEntity.ok(rideService.getAllRides());
     }
 
-    // ── Créer et broadcaster une course ──
+    // ── ✅ CRÉER ET DISTRIBUER (Broadcast OU Assignation selon sélection) ──
     @PostMapping("/rides/create")
     public ResponseEntity<Ride> createAndBroadcast(
             @RequestBody SpontaneousRideDto dto) {
+        
+        // Créer la course
         Ride ride = rideService.createRide(
             dto.getPassengerName(),
             dto.getPickupAddress(),
-            dto.getDropoffAddress(),
-            dto.getPickupLat(),
-            dto.getPickupLng()
+            dto.getDropoffAddress() 
+//            dto.getPickupLat(),
+//            dto.getPickupLng()
         );
-        rideService.broadcastRideToAllDrivers(ride);
+
+        // ✅ IF/ELSE CONDITIONNEL
+        if ("all".equalsIgnoreCase(dto.getTargetDriver())) {
+            // CAS 1: Broadcast à TOUS les chauffeurs
+            rideService.broadcastRideToAllDrivers(ride);
+            System.out.println("✅ Course #" + ride.getId() + " → BROADCAST à TOUS");
+        } else {
+            // CAS 2: Envoyer UNIQUEMENT à un chauffeur spécifique
+            try {
+                Long driverId = Long.parseLong(dto.getTargetDriver());
+                rideService.sendRideToDriver(driverId, ride);
+                System.out.println("✅ Course #" + ride.getId() + " → Chauffeur #" + driverId);
+            } catch (NumberFormatException e) {
+                System.err.println("❌ ID chauffeur invalide: " + dto.getTargetDriver());
+            }
+        }
+
         return ResponseEntity.ok(ride);
     }
 
-    // ── Envoyer une course à un chauffeur spécifique ──
+    // ── Endpoint séparé (optionnel, peut rester) ──
     @PostMapping("/rides/{rideId}/assign/{driverId}")
     public ResponseEntity<Ride> assignToDriver(
             @PathVariable Long rideId,
             @PathVariable Long driverId) {
+        
         Ride ride = rideService.getRideById(rideId);
         rideService.sendRideToDriver(driverId, ride);
+        System.out.println("✅ Course #" + rideId + " → Assignée au chauffeur #" + driverId);
+        
         return ResponseEntity.ok(ride);
     }
 }
